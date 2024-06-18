@@ -2,11 +2,9 @@
 """
 8. List all documents in Python
 """
-from typing import List
-from pymongo.collection import Collection
 
 
-def list_all(mongo_collection: Collection) -> List:
+def list_all(mongo_collection):
     """
     list_all:  lists all documents in a collection
     -----------------
