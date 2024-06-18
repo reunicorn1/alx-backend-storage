@@ -13,6 +13,6 @@ if __name__ == "__main__":
     print('Methods:')
     for method in methods:
         number = collection.count_documents({'method': method})
-        print(f'\tmethod {method}: {number}')
+        print('\tmethod {}: {}'.format(method, number))
     one_line = collection.count_documents({'method': 'GET', 'path': '/status'})
-    print(f'{one_line} status check')
+    print('{} status check'.format(one_line))
