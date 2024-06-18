@@ -19,4 +19,4 @@ def list_all(mongo_collection: Collection) -> List:
     """
     if not isinstance(mongo_collection, Collection):
         return []
-    return mongo_collection.find()
+    return list(mongo_collection.find())
