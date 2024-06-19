@@ -84,7 +84,6 @@ class Cache:
         self._redis.set(_id, data)
         return _id
 
-    @count_calls
     def get(self, key: str, fn: Union[Callable, None] = None) -> Any:
         """
         This function converts data retrieved from the database
@@ -107,7 +106,6 @@ class Cache:
             return value
         return fn(value)
 
-    @count_calls
     def get_str(self, key: str) -> str:
         """
         This function converts data retrieved from the database
@@ -124,7 +122,6 @@ class Cache:
         """
         return self.get(key, str)
 
-    @count_calls
     def get_int(self, key: str) -> int:
         """
         This function converts data retrieved from the database
