@@ -28,11 +28,7 @@ def count_calls(method: Callable) -> Callable:
         of the times a certain function was called
         """
         if isinstance(self._redis, redis.Redis):
-            name = method.__qualname__
-            if self._redis.get(name):
-                self._redis.incrby(name)
-            else:
-                self._redis.set(name, 1)
+            self._redis.incr(method.__qualname__)
         return method(self, *args, **kwargs)
     return wrapper
 
