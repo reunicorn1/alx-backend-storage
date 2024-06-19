@@ -3,7 +3,7 @@
 Redis basic
 """
 import redis
-from typing import Union
+from typing import Union, Callable, Any
 from uuid import uuid4
 
 
@@ -42,7 +42,7 @@ class Cache:
 
         Returns:
         -------
-        a string of uuid key to restore the value with
+            a string of uuid key to restore the value with
         """
         _id: str = str(uuid4())
         if isinstance(data, int) or isinstance(data, float):
@@ -51,3 +51,62 @@ class Cache:
             data = data.decode('utf-8')
         self._redis.set(_id, data)
         return _id
+
+    def get(self, key: str, fn: Callable) -> Any:
+        """
+        This function converts data retrieved from the database
+        in the desired format based on the function argument
+
+        Parameters:
+        ----------
+        key: str
+            the key of the value to be retrieved
+        fn: function
+            the callable used to convert th data to the desired
+            format
+
+        Returns:
+        -------
+           the value retrieved
+        """
+        value: bytes = self._redis.get(key)
+        if not fn:
+            return value
+        return fn(value)
+
+    def get_str(self, key: str) -> str:
+        """
+        This function converts data retrieved from the database
+        as a string
+
+        Parameters:
+        ----------
+        key: str
+            the key of the value to be retrieved
+
+        Returns:
+        -------
+           the value retrieved
+        """
+        self.get(key, str)
+
+    def get_int(self, key: str) -> int:
+        """
+        This function converts data retrieved from the database
+        as an integer
+
+        Parameters:
+        ----------
+        key: str
+            the key of the value to be retrieved
+
+        Returns:
+        -------
+           the value retrieved
+        """
+        self.get(key, int)
+
+
+
+
+
