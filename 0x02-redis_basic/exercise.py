@@ -22,19 +22,18 @@ def count_calls(method: Callable) -> Callable:
         the wrapper function
     """
     @wraps(method)
-    def wrapper(self, *args: Tuple[Any]) -> Any:
+    def wrapper(self, *args, **kwargs) -> Any:
         """
         This is a wrapper function that calls incby to keep count
         of the times a certain function was called
         """
-        result = method(self, *args)
-        name = method.__qualname__
-        if self._redis.get(name):
-            self._redis.incrby(name)
-        else:
-            self._redis.set(name, 1)
-        return result
-
+        if isinstance(self._redis, redis.Redis):
+            name = method.__qualname__
+            if self._redis.get(name):
+                self._redis.incrby(name)
+            else:
+                self._redis.set(name, 1)
+        return method(self, *args, **kwargs)
     return wrapper
 
 
