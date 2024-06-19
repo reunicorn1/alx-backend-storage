@@ -2,9 +2,39 @@
 """
 Redis basic
 """
+from functools import wraps
 import redis
-from typing import Union, Callable, Any
+from typing import Union, Callable, Any, Tuple, Dict
 from uuid import uuid4
+
+
+def count_calls(method: Callable) -> Callable:
+    """
+    This is a decorator function that counts the number of times
+    a certain Cache method was called
+
+    Parameters:
+    ----------
+    method: Callable
+
+    Returns:
+    -------
+        the wrapper function
+    """
+    @wraps(method)
+    def wrapper(self, *args: Tuple[Any]) -> Any:
+        """
+        This is a wrapper function that calls incby to keep count
+        of the times a certain function was called
+        """
+        name = method.__qualname__
+        if self._redis.get(name):
+            self._redis.incrby(name)
+        else:
+            self._redis.set(name, 1)
+        result = method(self, *args)
+        return result
+    return wrapper
 
 
 class Cache:
@@ -30,6 +60,7 @@ class Cache:
         self._redis = redis.Redis(host='127.0.0.1', port=6379)
         self._redis.flushdb()
 
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """
         takes a data argument generates a random key using uuid
@@ -52,7 +83,8 @@ class Cache:
         self._redis.set(_id, data)
         return _id
 
-    def get(self, key: str, fn: Callable=None) -> Any:
+    @count_calls
+    def get(self, key: str, fn: Union[Callable, None] = None) -> Any:
         """
         This function converts data retrieved from the database
         in the desired format based on the function argument
@@ -74,6 +106,7 @@ class Cache:
             return value
         return fn(value)
 
+    @count_calls
     def get_str(self, key: str) -> str:
         """
         This function converts data retrieved from the database
@@ -88,8 +121,9 @@ class Cache:
         -------
            the value retrieved
         """
-        self.get(key, str)
+        return self.get(key, str)
 
+    @count_calls
     def get_int(self, key: str) -> int:
         """
         This function converts data retrieved from the database
@@ -104,4 +138,4 @@ class Cache:
         -------
            the value retrieved
         """
-        self.get(key, int)
+        return self.get(key, int)
