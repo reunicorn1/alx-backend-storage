@@ -105,8 +105,3 @@ class Cache:
            the value retrieved
         """
         self.get(key, int)
-
-
-
-
-
