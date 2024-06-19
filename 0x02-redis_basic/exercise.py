@@ -52,7 +52,7 @@ class Cache:
         self._redis.set(_id, data)
         return _id
 
-    def get(self, key: str, fn: Callable) -> Any:
+    def get(self, key: str, fn: Callable=None) -> Any:
         """
         This function converts data retrieved from the database
         in the desired format based on the function argument

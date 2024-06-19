@@ -17,3 +17,7 @@ for value, fn in TEST_CASES.items():
     key = cache.store(value)
     assert cache.get(key, fn=fn) == value
 
+value = 'reem'
+byte = b'reem'
+key = cache.store(value)
+assert cache.get(key) == byte
