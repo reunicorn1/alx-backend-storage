@@ -30,8 +30,8 @@ def cache_pages(method: Callable) -> Callable:
         cache = redis.Redis(host='127.0.0.1', port=6379)
         result = cache.get(str(args))
         if not result:
-            result = method(args)
-            cache.set(str(args), result)
+            result = method(*args)
+            cache.setex(str(args), 10, result)
         return result
     return wrapper
 
@@ -56,7 +56,6 @@ def count_occurance(method: Callable) -> Callable:
         returns the results from the cache or stores it
         """
         cache = redis.Redis(host='127.0.0.1', port=6379)
-        print(args[0])
         cache.incr('count:{}'.format(args[0]))
         return method(*args, **kwargs)
     return wrapper

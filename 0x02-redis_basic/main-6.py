@@ -25,4 +25,10 @@ for url in urls:
     end_time = time.time()
     print(end_time - start_time)
 
+    time.sleep(10)
+    start_time = time.time()
+    get_page(url)
+    end_time = time.time()
+    print(end_time - start_time)
+
     print('the count of ', url, cache.get('count:{}'.format(url)))
