@@ -32,7 +32,7 @@ def count_calls(method: Callable) -> Callable:
         return method(self, *args, **kwargs)
     return wrapper
 
-def call_history(method: Callable) -> callable:
+def call_history(method: Callable) -> Callable:
     """
     This is a decorator function that stores the history of inputs and
     outputs for a particular function
