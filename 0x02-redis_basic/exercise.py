@@ -45,7 +45,8 @@ def call_history(method: Callable) -> callable:
     -------
         the wrapper function
     """
-    def wrapper(self, *args, **kwargs):
+    @wraps(method)
+    def wrapper(self, *args, **kwargs) -> Any:
         """
         This is a wrapper function that adds additional actions during
         the execution of the argument function
@@ -56,8 +57,8 @@ def call_history(method: Callable) -> callable:
             result = method(self, *args, **kwargs)
             self._redis.rpush('{}:outputs'.format(method.__qualname__),
                               result)
-            return result
-        return wrapper
+        return result
+    return wrapper
 
 
 class Cache:

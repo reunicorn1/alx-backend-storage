@@ -5,6 +5,7 @@ Cache = __import__('exercise').Cache
 
 cache = Cache()
 
+print(cache.store.__qualname__)
 s1 = cache.store("first")
 print(s1)
 s2 = cache.store("secont")
