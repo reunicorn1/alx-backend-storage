@@ -63,6 +63,7 @@ def call_history(method: Callable) -> Callable:
         return result
     return wrapper
 
+
 def replay(method):
     """
     This function displays the history of calls of a particular
@@ -80,10 +81,11 @@ def replay(method):
         inn = cache.lrange('{}:inputs'.format(method.__qualname__), 0, -1)
         out = cache.lrange('{}:outputs'.format(method.__qualname__), 0, -1)
         print('{} was called {} times:'.format(method.__qualname__, len(out)))
-        for i, j  in zip(inn, out):
+        for i, j in zip(inn, out):
             print('{}(*{}) -> {}'.format(method.__qualname__,
                                          i.decode('utf-8'),
-                                                    j.decode('utf-8')))
+                                         j.decode('utf-8')))
+
 
 class Cache:
     """
