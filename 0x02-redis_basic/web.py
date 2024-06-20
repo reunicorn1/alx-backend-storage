@@ -28,10 +28,12 @@ def cache_pages(method: Callable) -> Callable:
         returns the results from the cache or stores it
         """
         cache = redis.Redis(host='127.0.0.1', port=6379)
-        result = cache.get(str(args))
+        print(args[0])
+        result = cache.get(args[0])
         if not result:
             result = method(*args)
-            cache.setex(str(args), 10, result)
+            print(args[0])
+            cache.setex(args[0], 10, result)
         return result
     return wrapper
 
