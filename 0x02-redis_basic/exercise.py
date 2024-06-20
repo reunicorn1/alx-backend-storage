@@ -2,9 +2,11 @@
 """
 Redis basic
 """
+import asyncio
+import inspect
 from functools import wraps
 import redis
-from typing import Union, Callable, Any, Tuple, Dict
+from typing import Union, Callable, Any, Tuple, Dict, Iterable
 from uuid import uuid4
 
 
@@ -31,6 +33,7 @@ def count_calls(method: Callable) -> Callable:
             self._redis.incr(method.__qualname__)
         return method(self, *args, **kwargs)
     return wrapper
+
 
 def call_history(method: Callable) -> Callable:
     """
@@ -60,6 +63,27 @@ def call_history(method: Callable) -> Callable:
         return result
     return wrapper
 
+def replay(method):
+    """
+    This function displays the history of calls of a particular
+    function
+
+    Parameters:
+    ----------
+    method: a Callable
+
+    Returns:
+        None
+    """
+    if isinstance(method.__self__._redis, redis.Redis):
+        cache = method.__self__._redis
+        inn = cache.lrange('{}:inputs'.format(method.__qualname__), 0, -1)
+        out = cache.lrange('{}:outputs'.format(method.__qualname__), 0, -1)
+        print('{} was called {} times:'.format(method.__qualname__, len(out)))
+        for i, j  in zip(inn, out):
+            print('{}(*{}) -> {}'.format(method.__qualname__,
+                                         i.decode('utf-8'),
+                                                    j.decode('utf-8')))
 
 class Cache:
     """
